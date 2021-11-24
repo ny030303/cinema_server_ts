@@ -1,0 +1,19 @@
+/build/
+/bin/
+target/
+ 
+# OS Files #
+.DS_Store
+  
+*.class
+ 
+# Package Files #
+*.jar
+*.war
+*.ear
+*.db
+
+
+node_modules
+dist
+.env
