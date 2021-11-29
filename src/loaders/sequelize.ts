@@ -24,7 +24,8 @@ export default (): { seqInstance: Sequelize, models: { name: string; model: any 
         {name:'movieGraphModel', model: require('../models/MovieGraph').default},
         {name:'movieRatedModel', model: require('../models/MovieRated').default},
         {name:'movieReviewModel', model: require('../models/MovieReview').default},
-        {name:'movieScoreModel', model: require('../models/MovieScore').default}
+        {name:'movieScoreModel', model: require('../models/MovieScore').default},
+        {name:'userModel', model: require('../models/User').default}
     ];
     let db = {seqInstance: seqInstance, models: modelArr};
     db.models.forEach(element => {element.model.initialize(seqInstance);});

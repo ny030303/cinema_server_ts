@@ -3,6 +3,12 @@ import cors  from 'cors';
 // import { OpticMiddleware } from '@useoptic/express-middleware';
 import routes from '../api';
 import config from '../config';
+// import * as passport from 'passport';
+import passport from 'passport';
+import session from 'express-session';
+// const session = require("express-session");
+import flash from 'connect-flash';
+
 export default ({ app }: { app: express.Application }) => {
   /**
    * Health Check endpoints
@@ -31,7 +37,16 @@ export default ({ app }: { app: express.Application }) => {
 
   // Transforms the raw string of req.body into json
   app.use(express.json());
-  
+  // console.log(passport);
+  app.use(session({
+    secret: "secret",
+    resave: true,
+    saveUninitialized: true
+  }));
+
+  app.use(passport.initialize());
+  app.use(passport.session());
+  app.use(flash());
   // Load API routes
   app.use(config.api.prefix, routes());
 
@@ -68,4 +83,18 @@ export default ({ app }: { app: express.Application }) => {
       },
     });
   });
+
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser(async (user, done) => {
+  
+  try {
+    // let dbUser = await dbQuery("GET", "SELECT * FROM user WHERE id = ?", [user.id]);
+    // // let ur = dbUser.row[0];
+    // if(ur) {
+    //   done(null, ur);
+    // }
+  } catch (error) {
+    done(null,{err:error});
+  }
+});
 };

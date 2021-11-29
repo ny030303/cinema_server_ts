@@ -1,12 +1,5 @@
 import 'reflect-metadata';
 import { Service, Inject } from 'typedi';
-// import jwt from 'jsonwebtoken';
-// import MailerService from './mailer';
-import config from '../config';
-// import argon2 from 'argon2';
-// import { randomBytes } from 'crypto';
-import { IKeywordDTO } from '../interfaces/IKeywordDTO';
-import { IMovieRated } from '../interfaces/IMovieRated';
 import { EventDispatcher, EventDispatcherInterface } from '../decorators/eventDispatcher';
 import events from '../subscribers/event';
 import MovieGenore from '../models/MovieGenore';

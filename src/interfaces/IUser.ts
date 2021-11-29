@@ -5,8 +5,7 @@ export interface IUser {
     profile_url: string;
   }
   
-// export interface IUserInputDTO {
-//   name: string;
-//   email: string;
-//   password: string;
-// }
+export interface IUserInputDTO {
+  id: string;
+  pwd: string;
+}

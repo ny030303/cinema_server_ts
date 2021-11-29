@@ -65,54 +65,14 @@ export default class MovieService {
       let model;
       model = this.movieModel;
 
-      let sql ="select a.*, b.*, c.* from movie as a, "+
-                  "(SELECT movie_id, AVG(rating_num) rating_num "+
-                        "FROM `movie_review` " +
-                        "where rating_num != -1 " +
-                        "group by movie_id) as b," +
-                        "movie_graph as c " +
-                    "where a.movie_id = b.movie_id AND b.movie_id = c.movie_id " +
-                    "ORDER BY b.rating_num desc ";
+      let sql =`select a.*, AVG(b.rating_num) rating_num_avg, c.jqplot_sex, c.jqplot_age, c.charm_point from movie as a 
+                  inner join movie_review b ON a.movie_id = b.movie_id AND b.rating_num != -1
+                  left outer join movie_graph c ON a.movie_id = c.movie_id
+                  GROUP BY a.movie_id, b.movie_id, c.movie_id, c.jqplot_sex, c.jqplot_age, c.charm_point
+                  ORDER BY rating_num_avg desc`;
 
       const movieRes = await this.seqInstance.query(sql, { type: QueryTypes.SELECT });
-
-      // const movieRes = await review.findAll({
-      //   offset: 0, limit: 3,
-      //   where: {rating_num: {[Op.ne]: -1}}
-      // });
-
-      // const movieRes = await model.findAll({
-      //   subQuery: false,
-      //   offset: 0, limit: 3,
-      //   attributes: [ 'movie_id', 'title'],
-      //   required: true,
-      //   row: true,
-      //   include: [
-      //     {
-      //       model: this.movieReviewModel,
-      //       // attributes: ['rating_num'],
-      //       attributes: [[Sequelize.fn('AVG',Sequelize.col('rating_num')), 'avgRating'], 'writer'],
-      //       required: false,
-      //       // as: 'reviews',
-      //       where: {rating_num: {[Op.ne]: -1}},
-      //       group: ['writer'],
-      //     },
-      //     {
-      //       model: this.movieGraphModel,
-      //       attributes: ['jqplot_sex', 'jqplot_age', 'charm_point'],
-      //       required: true
-      //     },
-      //   ],
-      //   where: {
-      //     // [`$reviews.rating_num$`]: {
-      //     //   [Op.ne]: -1
-      //     // }
-      //   },
-      //   group: ['title']
-      //   // order: [
-      //   //   ['rating_num', 'DESC']
-      //   // ]
-      // });
+      
       console.log(movieRes);
       return movieRes;
     } catch (e) {
