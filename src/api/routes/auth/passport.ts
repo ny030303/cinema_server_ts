@@ -8,6 +8,7 @@ import { Logger } from 'winston';
 import localFormDataUpload from '../../middlewares/localMulter';
 import AuthService from '../../../services/auth';
 import { IUserInputDTO } from '../../../interfaces/IUser';
+import User from '../../../models/User';
 
 const route = Router();
 const authOpts = {
@@ -17,24 +18,21 @@ const authOpts = {
     passReqToCallback: true
   },
   redirect: {
-    successRedirect: '/',
-    failureRedirect: '/auth/failed',
+    successRedirect: '/api/users/me',
+    failureRedirect: '/api/auth/failed',
     failureFlash: true
   },
 };
 export default (route: Router) => {
-    // console.log('emf');
     const logger:Logger = Container.get('logger');
     passport.use('local', new LocalStrategy(authOpts.local, async (req, id, pwd, done) => {
         // console.log(req);
         try {
             const authServiceInstance = Container.get(AuthService);
             const dbUserInfo = await authServiceInstance.localLogin(req.body as IUserInputDTO);
-            console.log(dbUserInfo);
-            // if(typeof dbUserInfo == "User") {
-
-            // }
-            // done(null, dbUserInfo);
+            // console.log(dbUserInfo);
+            if(dbUserInfo.constructor == User) done(null, dbUserInfo);
+            else done(null, false, dbUserInfo);
         } catch (error) {
             logger.error('🔥 error: %o', error);
             done(error);

@@ -1,35 +1,35 @@
-import jwt from 'express-jwt';
-import config from '../../config';
+import { Model } from 'sequelize/types';
+import { Container } from 'typedi';
+// import mongoose from 'mongoose';
+// import { IUser } from '@/interfaces/IUser';
+import { Logger } from 'winston';
+import { IUser } from '../../interfaces/IUser';
 
 /**
- * We are assuming that the JWT will come in a header with the form
- *
- * Authorization: Bearer ${JWT}
- *
- * But it could come in a query parameter with the name that you want like
- * GET https://my-bulletproof-api.com/stats?apiKey=${JWT}
- * Luckily this API follow _common sense_ ergo a _good design_ and don't allow that ugly stuff
+ * Attach user to req.currentUser
+ * @param {*} req Express req Object
+ * @param {*} res  Express res Object
+ * @param {*} next  Express next Function
  */
-const getTokenFromHeader = req => {
-  /**
-   * @TODO Edge and Internet Explorer do some weird things with the headers
-   * So I believe that this should handle more 'edge' cases ;)
-   */
-  if (
-    (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Token') ||
-    (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')
-  ) {
-    return req.headers.authorization.split(' ')[1];
+const isAuth = async (req, res, next) => {
+  const Logger : Logger = Container.get('logger');
+  try {
+    // console.log(req.user);
+    // const UserModel = Container.get('userModel') as Model<IUser>;
+    // UserModel.findOne({where: {id: userId}});
+    // const userRecord = await UserModel.findById(req.token._id);
+    // if (!userRecord) {
+    //   return res.sendStatus(401);
+    // }
+    // const currentUser = userRecord.toObject();
+    // Reflect.deleteProperty(currentUser, 'password');
+    // Reflect.deleteProperty(currentUser, 'salt');
+    // req.currentUser = currentUser;
+    return next();
+  } catch (e) {
+    Logger.error('🔥 Error attaching user to req: %o', e);
+    return next(e);
   }
-  return null;
 };
-
-const isAuth = jwt({
-  secret: config.jwtSecret, // The _secret_ to sign the JWTs
-  algorithms: [config.jwtAlgorithm], // JWT Algorithm
-  userProperty: 'token', // Use req.token to store the JWT
-  getToken: getTokenFromHeader, // How to extract the JWT from the request
-
-});
 
 export default isAuth;

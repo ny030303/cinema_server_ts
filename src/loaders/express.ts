@@ -8,6 +8,9 @@ import passport from 'passport';
 import session from 'express-session';
 // const session = require("express-session");
 import flash from 'connect-flash';
+import Container from 'typedi';
+import AuthService from '../services/auth';
+import User from '../models/User';
 
 export default ({ app }: { app: express.Application }) => {
   /**
@@ -85,16 +88,5 @@ export default ({ app }: { app: express.Application }) => {
   });
 
 passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser(async (user, done) => {
-  
-  try {
-    // let dbUser = await dbQuery("GET", "SELECT * FROM user WHERE id = ?", [user.id]);
-    // // let ur = dbUser.row[0];
-    // if(ur) {
-    //   done(null, ur);
-    // }
-  } catch (error) {
-    done(null,{err:error});
-  }
-});
+passport.deserializeUser(async (userInfo:any, done) =>  done(null, userInfo) );
 };

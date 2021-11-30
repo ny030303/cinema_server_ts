@@ -6,6 +6,7 @@ import auth from './routes/auth/auth';
 import keyword from './routes/keyword';
 import movie from './routes/movie';
 import review from './routes/review';
+import user from './routes/user';
 
 // guaranteed to get dependencies
 export default () => {
@@ -14,7 +15,7 @@ export default () => {
 	movie(app);
 	review(app);
 	auth(app);
-	// user(app);
+	user(app);
 	// agendash(app);
 
 	return app

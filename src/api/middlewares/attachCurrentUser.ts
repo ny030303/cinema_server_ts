@@ -1,7 +1,9 @@
+import { Sequelize } from 'sequelize/types';
 import { Container } from 'typedi';
 // import mongoose from 'mongoose';
 // import { IUser } from '@/interfaces/IUser';
 import { Logger } from 'winston';
+import User from '../../models/User';
 
 /**
  * Attach user to req.currentUser
@@ -12,15 +14,18 @@ import { Logger } from 'winston';
 const attachCurrentUser = async (req, res, next) => {
   const Logger : Logger = Container.get('logger');
   try {
-    // const UserModel = Container.get('userModel') as mongoose.Model<IUser & mongoose.Document>;
-    // const userRecord = await UserModel.findById(req.token._id);
-    // if (!userRecord) {
-    //   return res.sendStatus(401);
-    // }
-    // const currentUser = userRecord.toObject();
-    // Reflect.deleteProperty(currentUser, 'password');
-    // Reflect.deleteProperty(currentUser, 'salt');
-    // req.currentUser = currentUser;
+    if(!req.user) return res.sendStatus(401);
+
+    const userModel = Container.get('userModel') as any;
+    let userRecord = await userModel.findOne({where: {id: req.user.id}});
+    if(userRecord) {
+      console.log(userRecord.dataValues);
+      const currentUser = JSON.parse(JSON.stringify(userRecord.dataValues));
+      Reflect.deleteProperty(currentUser, 'pwd');
+      req.currentUser = currentUser;
+    } else {
+      return res.sendStatus(401);
+    }
     return next();
   } catch (e) {
     Logger.error('🔥 Error attaching user to req: %o', e);
