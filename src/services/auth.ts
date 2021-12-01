@@ -24,10 +24,5 @@ export default class AuthService {
       this.logger.error(e);
       throw e;
     }
-        // console.log(req.body);
-        //   let dbUser = await dbQuery("GET", "SELECT * FROM user WHERE id = ?", [id]);
-        //   let user = dbUser.row[0];
-        //   console.log(user);
-        
   }
 }

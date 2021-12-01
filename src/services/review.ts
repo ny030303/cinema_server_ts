@@ -38,24 +38,24 @@ export default class ReviewService {
       throw e;
     }
   }
-
-  // public async writeReview(req: Request):Promise<[Movie]> {
-  //   try {
-  //     let model;
-  //     model = this.movieReviewModel;
+//Promise<[Movie]> 
+  public async writeReview(req: Request) {
+    try {
+      let model;
+      model = this.movieReviewModel;
       
-  //     const movieRes = await model.create({
-  //       movie_id: ,
-  //       site:,
-  //       created:,
-  //       writer:,
+      // const movieRes = await model.create({
+      //   movie_id: ,
+      //   site:,
+      //   created:,
+      //   writer:,
         
-  //     });
-  //     console.log(movieRes);
-  //     return movieRes;
-  //   } catch (e) {
-  //     this.logger.error(e);
-  //     throw e;
-  //   }
-  // }
+      // });
+      // console.log(movieRes);
+      // return movieRes;
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
 }

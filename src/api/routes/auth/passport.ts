@@ -26,11 +26,9 @@ const authOpts = {
 export default (route: Router) => {
     const logger:Logger = Container.get('logger');
     passport.use('local', new LocalStrategy(authOpts.local, async (req, id, pwd, done) => {
-        // console.log(req);
         try {
             const authServiceInstance = Container.get(AuthService);
             const dbUserInfo = await authServiceInstance.localLogin(req.body as IUserInputDTO);
-            // console.log(dbUserInfo);
             if(dbUserInfo.constructor == User) done(null, dbUserInfo);
             else done(null, false, dbUserInfo);
         } catch (error) {
