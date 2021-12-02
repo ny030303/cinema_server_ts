@@ -38,21 +38,63 @@ export default class ReviewService {
       throw e;
     }
   }
+
+  public getNow() {
+    let d = new Date();
+      let fomatDate = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString();
+      return fomatDate.replace("T", " ").slice(0, -5);
+  }
 //Promise<[Movie]> 
-  public async writeReview(req: Request) {
+  public async writeReview(req: any) {
     try {
       let model;
       model = this.movieReviewModel;
+      const created = this.getNow();
       
-      // const movieRes = await model.create({
-      //   movie_id: ,
-      //   site:,
-      //   created:,
-      //   writer:,
-        
-      // });
+      const res = await model.create({
+        movie_id: req.body.movie_id,
+        site: "this",
+        created: created,
+        writer: req.currentUser.id,
+        comment: req.body.comment,
+        like_num: 0,
+        rating_num: req.body.rating_num
+      });
       // console.log(movieRes);
-      // return movieRes;
+      return res;
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  public async editReview(req: any) {
+    try {
+      let model;
+      model = this.movieReviewModel;
+      const created = this.getNow();
+      
+      const res = await model.update(
+        {created: created, comment: req.body.comment, rating_num: req.body.rating_num}, 
+        {where: {idx: req.body.idx, movie_id: req.body.movie_id, writer: req.currentUser.id}}
+      );
+      // console.log(movieRes);
+      return res;
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  public async deleteReview(req: any) {
+    try {
+      let model;
+      model = this.movieReviewModel;
+      const res = await model.destroy(
+        { where: {idx: req.body.idx, movie_id: req.body.movie_id, writer: req.currentUser.id}}
+      );
+      // console.log(movieRes);
+      return res;
     } catch (e) {
       this.logger.error(e);
       throw e;
