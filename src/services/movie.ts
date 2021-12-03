@@ -29,12 +29,11 @@ export default class MovieService {
   @EventDispatcher() private eventDispatcher: EventDispatcherInterface
   constructor() {}
 //Promise<IKeywordDTO>
-  public async getRank(req: Request):Promise<[Movie]> {
+  public async getRank(req: any):Promise<[Movie]> {
     try {
-      let model;
+      let model, movieRes;
       model = this.movieModel;
-      
-      const movieRes = await model.findAll({
+      let obj =  {
         offset: 0, limit: 3,
         include: [
            {
@@ -51,7 +50,10 @@ export default class MovieService {
             )
            }
         ]
-      });
+      };
+      if(req.query.count)  movieRes = await model.count(obj);
+       else  movieRes = await model.findAll(obj);
+      
       console.log(movieRes);
       return movieRes;
     } catch (e) {
@@ -59,10 +61,13 @@ export default class MovieService {
       throw e;
     }
   }
+  public makeCountQuery = (sql) => {
+    return "select count(*) 'count_num' from (" + sql + ") temp_name"; 
+  };
 
-  public async getRating(req: Request):Promise<object[]> {
+  public async getRating(req: any):Promise<object[]> {
     try {
-      let model;
+      let model, movieRes;
       model = this.movieModel;
 
       let sql =`select a.*, AVG(b.rating_num) rating_num_avg, c.jqplot_sex, c.jqplot_age, c.charm_point from movie as a 
@@ -71,8 +76,9 @@ export default class MovieService {
                   GROUP BY a.movie_id, b.movie_id, c.movie_id, c.jqplot_sex, c.jqplot_age, c.charm_point
                   ORDER BY rating_num_avg desc`;
 
-      const movieRes = await this.seqInstance.query(sql, { type: QueryTypes.SELECT });
       
+      if(req.query.count)  movieRes = await this.seqInstance.query(this.makeCountQuery(sql), { type: QueryTypes.SELECT });
+       else  movieRes = await this.seqInstance.query(sql, { type: QueryTypes.SELECT });
       console.log(movieRes);
       return movieRes;
     } catch (e) {

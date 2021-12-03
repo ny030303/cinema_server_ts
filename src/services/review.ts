@@ -10,12 +10,8 @@ import MovieReview from '../models/MovieReview';
 
 @Service()
 export default class ReviewService {
-  // @Inject('movieModel') private movieModel: Movie
-  // @Inject('movieGraphModel') private movieGraphModel: MovieGraph
-  // @Inject('movieScoreModel') private movieScoreModel: MovieScore
   @Inject('movieReviewModel') public movieReviewModel: MovieReview
-  
-  // private mailer: MailerService,
+
   @Inject('logger') private logger
   @Inject('sequelizeInstance') private seqInstance: Sequelize
   @EventDispatcher() private eventDispatcher: EventDispatcherInterface
@@ -52,13 +48,8 @@ export default class ReviewService {
       const created = this.getNow();
       
       const res = await model.create({
-        movie_id: req.body.movie_id,
-        site: "this",
-        created: created,
-        writer: req.currentUser.id,
-        comment: req.body.comment,
-        like_num: 0,
-        rating_num: req.body.rating_num
+        movie_id: req.body.movie_id, site: "this", created: created, writer: req.currentUser.id, 
+        comment: req.body.comment, like_num: 0, rating_num: req.body.rating_num
       });
       // console.log(movieRes);
       return res;
